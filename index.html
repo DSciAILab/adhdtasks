@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>FocusFlow Pro - TDAH no Escritório</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, 'Helvetica Neue', Arial;
+    background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+    min-height:100vh; color:#1f2937;
+  }
+  .container{max-width:1200px;margin:0 auto;padding:20px}
+  .header{color:#fff;text-align:center;margin:6px 0 14px}
+  .title{font-size:28px;font-weight:800;opacity:.95}
+  .subtitle{opacity:.9}
+
+  /* Relógio grande */
+  .big-clock{
+    text-align:center; font-size:68px; font-weight:900; color:#fff;
+    line-height:1; margin:8px 0 2px;
+    text-shadow: 0 6px 30px rgba(0,0,0,.25);
+    letter-spacing: .5px;
+  }
+
+  /* Cronômetro grande */
+  .timer-wrap{
+    text-align:center; margin: 6px 0 16px;
+  }
+  .timer-label{font-size:18px;color:#e5e7eb;opacity:.85;margin-bottom:6px}
+  .timer-value{font-size:80px;font-weight:900;line-height:1}
+  .timer-value.focus{color:#16a34a}
+  .timer-value.break{color:#f59e0b}
+  .timer-value.idle{color:#e5e7eb}
+
+  .main-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-top:8px}
+  @media (max-width: 980px){ .main-grid{grid-template-columns:1fr} }
+
+  .card{
+    background:#fff;border-radius:16px;padding:22px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.10);
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .card:hover{transform:translateY(-2px); box-shadow: 0 16px 52px rgba(0,0,0,.14)}
+
+  .card h2{font-size:18px;color:#334155;margin-bottom:14px;display:flex;gap:8px;align-items:center}
+
+  /* Card de tarefa atual */
+  .current-title{font-size:18px;font-weight:800;margin-bottom:4px}
+  .current-meta{color:#6b7280;margin-bottom:14px}
+  .progress-bar{width:100%;height:8px;background:#eef2ff;border-radius:999px;overflow:hidden;margin:12px 0}
+  .progress-fill{height:100%;background:#4f46e5;width:0%;transition:width .3s ease}
+
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .btn{
+    background:#3b82f6;color:#fff;border:none;padding:12px 18px;border-radius:999px;
+    font-weight:700;cursor:pointer;transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn:hover{transform: translateY(-1px);box-shadow:0 8px 22px rgba(59,130,246,.25)}
+  .btn:active{transform:translateY(0)}
+  .btn.primary{background:#22c55e}
+  .btn.primary:hover{background:#16a34a}
+  .btn.danger{background:#ef4444}
+  .btn.danger:hover{background:#dc2626}
+  .btn.secondary{background:#6366f1}
+  .btn.secondary:hover{background:#4f46e5}
+
+  .mini-metrics{display:grid;grid-template-columns: repeat(5,1fr); gap:10px; margin-top:14px}
+  @media (max-width: 980px){ .mini-metrics{grid-template-columns: repeat(2,1fr)} }
+  .stat{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:12px;text-align:center}
+  .stat .value{font-size:20px;font-weight:900;color:#111827}
+  .stat .label{font-size:12px;color:#6b7280;margin-top:2px}
+
+  /* Lista de tarefas */
+  .task-list{max-height:520px;overflow:auto}
+  .task-item{
+    display:flex;align-items:center;gap:12px;padding:12px 10px;border-radius:12px;
+    background:#f8fafc;border:1px solid #e5e7eb;margin-bottom:10px;cursor:pointer;
+    transition: background .2s ease, transform .2s ease;
+  }
+  .task-item:hover{background:#f1f5f9; transform: translateX(3px)}
+  .task-item.selected{background:#ecfeff;border-color:#06b6d4}
+  .emoji{font-size:22px}
+  .task-content{flex:1}
+  .task-name{font-weight:800}
+  .task-meta{color:#6b7280;font-size:13px;margin-top:2px}
+
+  .legend{background:rgba(255,255,255,.9);border-radius:12px;padding:16px;margin-top:16px}
+  .legend-row{display:flex;gap:10px;align-items:center;margin-bottom:6px}
+
+  /* Modal */
+  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000}
+  .modal-card{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:16px;padding:24px;width:min(92%,520px)}
+  .form-group{margin-bottom:14px}
+  .form-group label{font-weight:700;color:#334155;margin-bottom:6px;display:block}
+  .input, .select, .textarea{
+    width:100%;border:2px solid #e5e7eb;border-radius:10px;padding:10px 12px;font-size:14px
+  }
+  .textarea{min-height:80px;resize:vertical}
+  .color-picker{display:flex;gap:10px;margin-top:8px}
+  .color-option{
+    width:44px;height:44px;border-radius:50%;border:3px solid transparent;display:flex;align-items:center;justify-content:center;font-size:20px;
+    background:#f8fafc;cursor:pointer;transition: transform .2s ease, box-shadow .2s ease, border .2s ease;
+  }
+  .color-option:hover{transform: scale(1.06); box-shadow: 0 10px 18px rgba(0,0,0,.10)}
+  .color-option.selected{border-color:#4f46e5}
+
+  /* Notificação */
+  .toast{
+    position:fixed;right:18px;top:18px;background:#111827;color:#fff;padding:12px 16px;border-radius:12px;
+    box-shadow: 0 14px 36px rgba(0,0,0,.25);opacity:0;transform: translateY(-12px);
+    transition: opacity .25s ease, transform .25s ease; z-index:2000
+  }
+  .toast.show{opacity:1;transform: translateY(0)}
+  .toast.success{background:#16a34a}
+  .toast.error{background:#ef4444}
+  .toast.warn{background:#f59e0b}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">🧠 FocusFlow Pro</div>
+      <div class="subtitle">Gerenciador de tarefas personalizado para TDAH no escritório</div>
+    </div>
+
+    <!-- Relógio grande -->
+    <div id="bigClock" class="big-clock">00:00:00</div>
+
+    <!-- Cronômetro -->
+    <div class="timer-wrap">
+      <div id="timerLabel" class="timer-label">Parado</div>
+      <div id="timerValue" class="timer-value idle">00:00</div>
+    </div>
+
+    <div class="main-grid">
+      <!-- Coluna esquerda: tarefa atual -->
+      <div class="card">
+        <h2>🎯 Tarefa atual</h2>
+        <div id="noTask" style="text-align:center;padding:16px 6px;color:#6b7280">
+          <div style="font-size:44px;margin-bottom:6px">✨</div>
+          Selecione uma tarefa ao lado para começar
+        </div>
+        <div id="taskCard" style="display:none">
+          <div id="taskTitle" class="current-title"></div>
+          <div id="taskMeta" class="current-meta"></div>
+          <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+
+          <div class="controls">
+            <button id="btnStart" class="btn primary">▶️ Iniciar</button>
+            <button id="btnComplete" class="btn secondary">✅ Concluir</button>
+            <button id="btnCancel" class="btn danger">✖️ Cancelar</button>
+          </div>
+
+          <div class="mini-metrics">
+            <div class="stat"><div id="m_done" class="value">0 min</div><div class="label">Feito (foco)</div></div>
+            <div class="stat"><div id="m_plan" class="value">0 min</div><div class="label">Planejado</div></div>
+            <div class="stat"><div id="m_left" class="value">0 min</div><div class="label">Restante</div></div>
+            <div class="stat"><div id="m_pcount" class="value">0</div><div class="label">Pausas</div></div>
+            <div class="stat"><div id="m_pmins" class="value">0 min</div><div class="label">Tempo em pausas</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna direita: lista -->
+      <div class="card">
+        <h2>📋 Minhas tarefas</h2>
+        <div class="task-list" id="taskList"></div>
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <button class="btn primary" style="flex:1" onclick="openModal()">➕ Nova tarefa</button>
+          <button class="btn" style="flex:1" onclick="addSamples()">✨ Exemplo</button>
+        </div>
+
+        <div class="legend">
+          <div class="legend-row"><span class="emoji">🔴</span> Conectado a outro humano</div>
+          <div class="legend-row"><span class="emoji">🟠</span> Melhor que faça</div>
+          <div class="legend-row"><span class="emoji">🟣</span> Me fazem bem (máx. 1/dia)</div>
+          <div class="legend-row"><span class="emoji">🟢</span> Seria legal</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <h2 style="margin-bottom:12px">➕ Nova tarefa</h2>
+      <div class="form-group">
+        <label>Título *</label>
+        <input id="f_title" class="input" placeholder="Ex.: Finalizar relatório mensal" />
+      </div>
+      <div class="form-group">
+        <label>Descrição (opcional)</label>
+        <textarea id="f_desc" class="textarea" placeholder="Detalhes adicionais..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Cor / Tipo</label>
+        <div class="color-picker">
+          <div class="color-option selected" data-e="🟠">🟠</div>
+          <div class="color-option" data-e="🔴">🔴</div>
+          <div class="color-option" data-e="🟣">🟣</div>
+          <div class="color-option" data-e="🟢">🟢</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Prioridade</label>
+        <select id="f_pri" class="select">
+          <option>Alta</option><option selected>Média</option><option>Baixa</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Energia necessária</label>
+        <select id="f_energy" class="select">
+          <option>Alta</option><option selected>Média</option><option>Baixa</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Estimativa (minutos)</label>
+        <input id="f_est" type="number" class="input" value="50" min="5" max="480" step="5" />
+      </div>
+      <div style="display:flex;gap:10px;margin-top:10px">
+        <button class="btn primary" style="flex:1" onclick="saveTask()">Salvar</button>
+        <button class="btn" style="flex:1" onclick="closeModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">OK</div>
+
+<script>
+/* ========================
+   Estado e Persistência
+======================== */
+const STORAGE_KEY = 'focusflow-data-v5';
+const POMO_FOCUS = 25 * 60;   // seg
+const POMO_BREAK = 5 * 60;    // seg (planejado; break é aberto)
+let state = {
+  tasks: [],            // [{id,title,desc,color,priority,energy,estimate,status,created,focusMinutes,breakMinutes,breakCount,startedDates:[],cyclesPlanned}]
+  current: null,        // task id
+  mode: 'idle',         // idle|focus|break
+  timer: null,          // setInterval id
+  timeLeft: 0,          // usado no foco (countdown)
+  breakElapsed: 0,      // usado no break (countup)
+  breakPlanned: POMO_BREAK,
+  breakBeeped: false,
+  cycle: 1
+};
+
+function load() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    try { state = {...state, ...JSON.parse(raw)} } catch(e){}
+  }
+  // sanity defaults
+  state.mode ||= 'idle';
+  state.breakPlanned ||= POMO_BREAK;
+  renderAll();
+}
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({...state, timer: null}));
+}
+
+/* ========================
+   Util
+======================== */
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8) }
+function mmss(s){ s=Math.max(0, s|0); const m=String(Math.floor(s/60)).padStart(2,'0'); const ss=String(s%60).padStart(2,'0'); return `${m}:${ss}` }
+function toast(msg, type='success'){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast show ${type==='error'?'error':type==='warn'?'warn':'success'}`;
+  setTimeout(()=>{ el.classList.remove('show') }, 2200);
+}
+function playBeep(){
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.type='sine'; o.frequency.value=880; o.connect(g); g.connect(ctx.destination);
+    g.gain.setValueAtTime(0.001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.01);
+    o.start(); o.stop(ctx.currentTime + 0.22);
+  }catch(e){}
+}
+function todayStr(){ return new Date().toDateString() }
+function hasPurpleStartedToday(excludeId=null){
+  return state.tasks.some(t =>
+    t.color==='🟣' &&
+    t.id !== excludeId &&
+    Array.isArray(t.startedDates) &&
+    t.startedDates.some(d => new Date(d).toDateString() === todayStr())
+  );
+}
+
+/* ========================
+   Relógio grande (sempre)
+======================== */
+function tickBigClock(){
+  const now = new Date();
+  const h=String(now.getHours()).padStart(2,'0');
+  const m=String(now.getMinutes()).padStart(2,'0');
+  const s=String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('bigClock').textContent = `${h}:${m}:${s}`;
+}
+setInterval(tickBigClock, 1000); tickBigClock();
+
+/* ========================
+   Timer Engine
+======================== */
+function clearTimer(){
+  if (state.timer){ clearInterval(state.timer); state.timer = null; }
+}
+function startFocus(){
+  state.mode = 'focus';
+  state.timeLeft = POMO_FOCUS;
+  clearTimer();
+  state.timer = setInterval(()=>{
+    state.timeLeft--;
+    if (state.timeLeft<=0){
+      clearTimer();
+      // Fim do foco -> contabiliza 25 min e entra em break aberto
+      const t = getCurrent();
+      if (t){
+        t.focusMinutes = (t.focusMinutes||0) + 25;
+        save();
+      }
+      playBeep();
+      startBreakOpen();
+    }
+    renderTimer();
+  }, 1000);
+  renderTimer();
+}
+function startBreakOpen(){
+  state.mode = 'break';
+  state.breakElapsed = 0;
+  state.breakPlanned = POMO_BREAK;
+  state.breakBeeped = false;
+  clearTimer();
+  state.timer = setInterval(()=>{
+    state.breakElapsed++;
+    if (!state.breakBeeped && state.breakElapsed >= state.breakPlanned){
+      playBeep();
+      state.breakBeeped = true;
+    }
+    renderTimer();
+  }, 1000);
+  renderTimer();
+}
+function closeBreakAndNextCycle(){
+  // fecha pausa atual (somar breakElapsed na tarefa; contar pausa)
+  const t = getCurrent();
+  if (t){
+    t.breakMinutes = (t.breakMinutes||0) + Math.ceil((state.breakElapsed||0)/60);
+    t.breakCount = (t.breakCount||0) + 1;
+    save();
+  }
+  state.cycle += 1;
+  startFocus();
+}
+function stopAll(){
+  clearTimer();
+  state.mode = 'idle';
+  state.timeLeft = 0;
+  state.breakElapsed = 0;
+  renderTimer();
+}
+
+/* ========================
+   Tarefas: CRUD + seleção
+======================== */
+function getCurrent(){ return state.tasks.find(x=>x.id===state.current) || null }
+function selectTask(id){
+  state.current = id;
+  state.cycle = 1;
+  stopAll();
+  renderAll();
+}
+function createTask({title,desc,color,priority,energy,estimate}){
+  const t = {
+    id: uid(), title, desc, color, priority, energy,
+    estimate: parseInt(estimate)||25, status:'todo', created: new Date().toISOString(),
+    focusMinutes:0, breakMinutes:0, breakCount:0, startedDates:[],
+    cyclesPlanned: Math.max(1, Math.ceil((parseInt(estimate)||25)/25))
+  };
+  state.tasks.unshift(t);
+  save(); renderList(); toast('✅ Tarefa criada!');
+}
+function completeTask(){
+  const t = getCurrent(); if (!t) return;
+  // se está em break, fechar pausa
+  if (state.mode==='break'){ closeBreakAndResetOnly(); }
+  // terminar qualquer timer sem iniciar novo
+  stopAll();
+  t.status='completed';
+  save();
+  state.current = null;
+  renderAll(); toast('🎉 Tarefa concluída!');
+}
+function cancelTask(){
+  const t = getCurrent(); if (!t) return;
+  if (state.mode==='break'){ closeBreakAndResetOnly(); }
+  stopAll();
+  t.status='cancelled';
+  save();
+  state.current = null;
+  renderAll(); toast('✖️ Tarefa cancelada');
+}
+function closeBreakAndResetOnly(){
+  const t = getCurrent(); if (!t) return;
+  t.breakMinutes = (t.breakMinutes||0) + Math.ceil((state.breakElapsed||0)/60);
+  t.breakCount = (t.breakCount||0) + 1;
+  save();
+}
+
+/* ========================
+   Ações de Início
+======================== */
+function onClickStart(){
+  const t = getCurrent(); if (!t) return;
+
+  // Regra da roxa: só 1 por dia ao iniciar foco (permitindo retomar a mesma)
+  const startedTodayThis = (t.startedDates||[]).some(d => new Date(d).toDateString() === todayStr());
+  if (t.color==='🟣' && !startedTodayThis && hasPurpleStartedToday(t.id)){
+    toast('⚠️ Já existe uma tarefa roxa iniciada hoje. Retome a roxa do dia ou deixe para amanhã.', 'warn');
+    return;
+  }
+
+  // Se está em BREAK, fechar a pausa e iniciar novo ciclo
+  if (state.mode==='break'){
+    closeBreakAndNextCycle();
+    return;
+  }
+
+  // Modo idle -> iniciar foco
+  t.status='doing';
+  t.startedDates = t.startedDates || [];
+  t.startedDates.push(new Date().toISOString());
+  save();
+  startFocus();
+  toast(`⏰ Foco iniciado (ciclo ${state.cycle})`);
+}
+
+/* ========================
+   Renderização
+======================== */
+function renderTimer(){
+  const labelEl = document.getElementById('timerLabel');
+  const valueEl = document.getElementById('timerValue');
+  const progress = document.getElementById('progressFill');
+
+  if (state.mode==='focus'){
+    labelEl.textContent = 'Foco';
+    valueEl.className = 'timer-value focus';
+    valueEl.textContent = mmss(state.timeLeft);
+    progress.style.width = `${(1 - state.timeLeft/POMO_FOCUS)*100}%`;
+  } else if (state.mode==='break'){
+    labelEl.textContent = 'Intervalo';
+    valueEl.className = 'timer-value break';
+    valueEl.textContent = mmss(state.breakElapsed);
+    const p = Math.min(1, (state.breakElapsed/(state.breakPlanned||POMO_BREAK)));
+    progress.style.width = `${p*100}%`;
+  } else {
+    labelEl.textContent = 'Parado';
+    valueEl.className = 'timer-value idle';
+    valueEl.textContent = '00:00';
+    progress.style.width = '0%';
+  }
+}
+function renderList(){
+  const el = document.getElementById('taskList');
+  const items = state.tasks.filter(t => t.status==='todo' || t.status==='doing');
+  if (!items.length){ el.innerHTML = `<div style="text-align:center;color:#6b7280;padding:16px">📝 Sem tarefas. Crie uma nova.</div>`; return; }
+  el.innerHTML = items.map(t => `
+    <div class="task-item ${state.current===t.id?'selected':''}" onclick="selectTask('${t.id}')">
+      <div class="emoji">${t.color}</div>
+      <div class="task-content">
+        <div class="task-name">${t.title}</div>
+        <div class="task-meta">${t.priority} • ${t.energy} • ~${t.estimate}min ${t.status==='doing'?'• Em andamento':''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+function renderCurrent(){
+  const noTask = document.getElementById('noTask');
+  const card = document.getElementById('taskCard');
+  const t = getCurrent();
+  if (!t){ noTask.style.display='block'; card.style.display='none'; renderTimer(); return; }
+  noTask.style.display='none'; card.style.display='block';
+
+  document.getElementById('taskTitle').textContent = `${t.color} ${t.title}`;
+  document.getElementById('taskMeta').textContent = `Ciclo ${state.cycle} de ${t.cyclesPlanned || Math.max(1, Math.ceil((t.estimate||25)/25))} • ${t.priority} • ${t.energy}`;
+
+  // Botões
+  const btnStart = document.getElementById('btnStart');
+  btnStart.textContent = (state.mode==='break') ? '▶️ Iniciar novo ciclo' : `▶️ Iniciar ciclo ${state.cycle}`;
+  btnStart.onclick = onClickStart;
+
+  document.getElementById('btnComplete').onclick = completeTask;
+  document.getElementById('btnCancel').onclick = cancelTask;
+
+  // Métricas
+  const planned = t.estimate||0;
+  const done = t.focusMinutes||0;
+  const left = Math.max(0, planned - done);
+  document.getElementById('m_plan').textContent = `${planned} min`;
+  document.getElementById('m_done').textContent = `${done} min`;
+  document.getElementById('m_left').textContent = `${left} min`;
+  document.getElementById('m_pcount').textContent = `${t.breakCount||0}`;
+  document.getElementById('m_pmins').textContent = `${t.breakMinutes||0} min`;
+
+  renderTimer();
+}
+function renderAll(){ renderList(); renderCurrent(); }
+
+/* ========================
+   Modal de Nova Tarefa
+======================== */
+let selectedEmoji = '🟠';
+function openModal(){
+  document.getElementById('modal').style.display='block';
+  document.getElementById('f_title').focus();
+}
+function closeModal(){
+  document.getElementById('modal').style.display='none';
+  document.getElementById('f_title').value='';
+  document.getElementById('f_desc').value='';
+  document.getElementById('f_est').value='50';
+  selectedEmoji='🟠';
+  document.querySelectorAll('.color-option').forEach(el=>el.classList.toggle('selected', el.dataset.e==='🟠'));
+}
+document.addEventListener('click', (e)=>{
+  const opt = e.target.closest('.color-option');
+  if (opt){ selectedEmoji = opt.dataset.e; document.querySelectorAll('.color-option').forEach(el=>el.classList.toggle('selected', el===opt)); }
+});
+function saveTask(){
+  const title = document.getElementById('f_title').value.trim();
+  if (!title){ toast('Informe um título', 'error'); return; }
+  const desc = document.getElementById('f_desc').value.trim();
+  const est  = parseInt(document.getElementById('f_est').value)||25;
+  const pri  = document.getElementById('f_pri').value;
+  const en   = document.getElementById('f_energy').value;
+
+  // Limite da roxa: não bloquear criação; regra aplica no início
+  createTask({title,desc,color:selectedEmoji,priority:pri,energy:en,estimate:est});
+  closeModal();
+}
+
+/* ========================
+   Amostras
+======================== */
+function addSamples(){
+  if (state.tasks.length) { toast('Já existem tarefas.'); return; }
+  createTask({title:'Revisar emails urgentes',desc:'Responder clientes',color:'🔴',priority:'Alta',energy:'Média',estimate:30});
+  createTask({title:'Organizar mesa',desc:'Deixar o ambiente ok',color:'🟣',priority:'Baixa',energy:'Baixa',estimate:15});
+  createTask({title:'Relatório mensal',desc:'Compilar dados',color:'🟠',priority:'Alta',energy:'Alta',estimate:60});
+}
+
+/* ========================
+   Eventos / Boot
+======================== */
+window.addEventListener('DOMContentLoaded', ()=>{
+  load();
+});
+</script>
+</body>
+</html>
