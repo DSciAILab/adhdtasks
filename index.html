@@ -32,6 +32,9 @@
             --border-color: #4a5568;
             --shadow: 0 10px 30px rgba(0,0,0,0.3);
             --shadow-hover: 0 15px 40px rgba(0,0,0,0.4);
+            --suggested-task-bg: linear-gradient(135deg, #3a475a, #4a5d7a);
+            --suggested-task-border: #6a7f9a;
+            --suggested-task-text: #f7fafc;
         }
         
         * {
@@ -354,8 +357,8 @@
         }
         
         .suggested-task {
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            border: 2px solid #f59e0b;
+            background: var(--suggested-task-bg, linear-gradient(135deg, #fef3c7, #fde68a));
+            border: 2px solid var(--suggested-task-border, #f59e0b);
             border-radius: 12px;
             padding: 15px;
             margin-bottom: 10px;
@@ -382,12 +385,12 @@
         .task-name {
             font-weight: 600;
             margin-bottom: 5px;
-            color: var(--text-primary);
+            color: var(--suggested-task-text, var(--text-primary));
         }
         
         .task-meta {
             font-size: 0.9em;
-            color: var(--text-secondary);
+            color: var(--suggested-task-text, var(--text-secondary));
         }
         
         .start-task-btn {
@@ -1253,14 +1256,14 @@
                 appState.currentTask = task;
                 appState.timeLeft = appState.settings.focusDuration * 60;
                 
-                document.getElementById('currentTaskTitle').textContent = task.title;
-                document.getElementById('noTaskState').style.display = 'none';
-                document.getElementById('activeTaskState').style.display = 'block';
+                document.getElementById(\'currentTaskTitle\').textContent = task.title;
+                document.getElementById(\'noTaskState\').style.display = \'none\';
+                document.getElementById(\'activeTaskState\').style.display = \'block\';
                 
                 updateTimer();
                 updateControls();
                 
-                showNotification(`Tarefa selecionada: ${task.title}`, 'success');
+                showNotification(`Tarefa selecionada: ${task.title}`, \'success\');
             }
         }
 
@@ -1308,19 +1311,18 @@
                 return;
             }
             
-            container.innerHTML = availableTasks.map(task => `
-                <div class="suggested-task" onclick="selectTask('${task.id}')">
+           container.innerHTML = availableTasks.map(task => `
+                <div class="suggested-task">
                     <div class="task-emoji">${getPriorityEmoji(task.priority)}</div>
                     <div class="task-info">
                         <div class="task-name">${task.title}</div>
                         <div class="task-meta">${getEnergyText(task.energy)} • ${getPriorityText(task.priority)}</div>
                     </div>
-                    <button class="start-task-btn" onclick="event.stopPropagation(); selectTask('${task.id}')">
+                    <button class="start-task-btn" onclick="event.stopPropagation(); selectTaskAndStart('${task.id}')">
                         Iniciar
                     </button>
                 </div>
-            `).join('');
-        }
+            `).join('');        }
 
         function updateTasksList() {
             const container = document.getElementById('tasksList');
@@ -1337,10 +1339,7 @@
                 return;
             }
             
-            container.innerHTML = allTasks.map(task => `
-                <div class="suggested-task ${task.completed ? 'completed' : ''}" 
-                     onclick="${task.completed ? '' : `selectTask('${task.id}')`}">
-                    <div class="task-emoji">${task.completed ? '✅' : getPriorityEmoji(task.priority)}</div>
+            container.innerHTML = allTasks.map(tas                <div class="suggested-task ${task.completed ? \'completed\' : \'\'} ">                   <div class="task-emoji">${task.completed ? '✅' : getPriorityEmoji(task.priority)}</div>
                     <div class="task-info">
                         <div class="task-name" style="${task.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${task.title}</div>
                         <div class="task-meta">
@@ -1348,8 +1347,7 @@
                             ${task.completed ? ' • Concluída em ' + new Date(task.completedAt).toLocaleDateString() : ''}
                         </div>
                     </div>
-                    ${!task.completed ? `
-                        <button class="start-task-btn" onclick="event.stopPropagation(); selectTask('${task.id}')">
+                    ${!task.completed ?                         <button class="start-task-btn" onclick="event.stopPropagation(); selectTaskAndStart(\'${task.id}\')">
                             Iniciar
                         </button>
                     ` : ''}
@@ -1671,4 +1669,12 @@
     </script>
 </body>
 </html>
+
+
+
+        function selectTaskAndStart(taskId) {
+            selectTask(taskId);
+            startTask();
+        }
+
 
