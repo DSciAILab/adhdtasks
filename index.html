@@ -1,93 +1,126 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>FocusFlow Pro</title>
-<style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,'Helvetica Neue',Arial;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;color:#111827}
-  .container{max-width:1200px;margin:0 auto;padding:18px}
-  .header{color:#fff;text-align:center;margin:6px 0 10px}
-  .title{font-size:28px;font-weight:800}
-  .nav{display:flex;gap:10px;justify-content:center;margin:10px 0}
-  .tab{background:rgba(255,255,255,.18);color:#fff;border:none;padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer}
-  .tab.active{background:#fff;color:#4f46e5}
-  .big-clock{font-size:68px;font-weight:900;color:#fff;text-align:center;line-height:1;margin:8px 0 2px;text-shadow:0 6px 30px rgba(0,0,0,.25)}
-  .timer-wrap{text-align:center;margin:6px 0 14px}
-  .timer-label{font-size:18px;color:#e5e7eb;opacity:.9;margin-bottom:6px}
-  .timer-value{font-size:80px;font-weight:900;line-height:1}
-  .timer-value.focus{color:#16a34a}
-  .timer-value.break{color:#f59e0b}
-  .timer-value.idle{color:#e5e7eb}
-  .grid{display:grid;grid-template-columns:2fr 1fr;gap:18px}
-  @media(max-width:980px){.grid{grid-template-columns:1fr}}
-  .card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 12px 40px rgba(0,0,0,.10)}
-  .card h2{font-size:18px;color:#334155;margin-bottom:12px;display:flex;gap:8px;align-items:center}
-  .progress{width:100%;height:8px;background:#eef2ff;border-radius:999px;overflow:hidden;margin:12px 0}
-  .progress > div{height:100%;background:#4f46e5;width:0%}
-  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-  .btn{background:#3b82f6;color:#fff;border:none;padding:11px 16px;border-radius:999px;font-weight:800;cursor:pointer}
-  .btn:hover{filter:brightness(.95)}
-  .btn.primary{background:#22c55e}.btn.secondary{background:#6366f1}.btn.danger{background:#ef4444}
-  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:12px}
-  @media(max-width:980px){.metrics{grid-template-columns:repeat(2,1fr)}}
-  .stat{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:10px;text-align:center}
-  .stat .v{font-weight:900}
-  .list{max-height:520px;overflow:auto}
-  .item{display:flex;align-items:center;gap:10px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:10px;margin-bottom:10px;cursor:pointer}
-  .item:hover{background:#f1f5f9}
-  .item.sel{background:#ecfeff;border-color:#06b6d4}
-  .emoji{font-size:22px}
-  .grow{flex:1}
-  .muted{color:#6b7280}
-  .legend{background:rgba(255,255,255,.9);border-radius:12px;padding:12px;margin-top:10px}
-  .legend div{display:flex;gap:8px;align-items:center}
-  .toast{position:fixed;right:18px;top:18px;background:#111827;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:0 14px 36px rgba(0,0,0,.25);opacity:0;transform:translateY(-10px);transition:.25s;z-index:2000}
-  .toast.show{opacity:1;transform:translateY(0)}
-  .toast.success{background:#16a34a}.toast.warn{background:#f59e0b}.toast.error{background:#ef4444}
-  .tag{display:inline-flex;gap:6px;align-items:center;background:#eef2ff;color:#4f46e5;border-radius:999px;padding:6px 10px;font-weight:700}
-  .order{display:flex;gap:6px;align-items:center}
-  .order .arrow{background:#e5e7eb;border:none;border-radius:8px;padding:6px 8px;cursor:pointer;font-weight:900}
-  .pill{background:#e5e7eb;border-radius:999px;padding:4px 8px;font-size:12px}
-  .tabs2{display:flex;gap:8px;margin-bottom:10px}
-  .t2{background:#eef2ff;border:none;border-radius:999px;padding:8px 12px;cursor:pointer;font-weight:700;color:#4f46e5}
-  .t2.active{background:#4f46e5;color:#fff}
-  .input,.select,.textarea{width:100%;border:2px solid #e5e7eb;border-radius:10px;padding:10px 12px}
-  .textarea{min-height:80px}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  @media(max-width:980px){.grid2{grid-template-columns:1fr}}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>FocusFlow Pro</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,'Helvetica Neue',Arial;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;color:#111827}
+    .container{max-width:1200px;margin:0 auto;padding:18px}
+    .header{color:#fff;text-align:center;margin:6px 0 10px}
+    .title{font-size:28px;font-weight:800}
+    .nav{display:flex;gap:10px;justify-content:center;margin:10px 0}
+    .tab{background:rgba(255,255,255,.18);color:#fff;border:none;padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer}
+    .tab.active{background:#fff;color:#4f46e5}
+    .big-clock{font-size:28px;font-weight:900;color:#fff;text-align:center;line-height:1;margin:8px 0 2px;text-shadow:0 6px 30px rgba(0,0,0,.25)}
+    .weekday{color:#fff;text-align:center;font-size:18px;margin-bottom:10px}
+    .timer-wrap{text-align:center;margin:6px 0 14px}
+    .timer-label{font-size:18px;color:#e5e7eb;opacity:.9;margin-bottom:6px}
+    .timer-value{font-size:80px;font-weight:900;line-height:1}
+    .timer-value.focus{color:#16a34a}
+    .timer-value.break{color:#f59e0b}
+    .timer-value.idle{color:#e5e7eb}
+    .timer-value.hyperfocus{color:#dc2626}
+    .timer-value.overtime{color:#ef4444}
+    .grid{display:grid;grid-template-columns:2fr 1fr;gap:18px}
+    @media(max-width:980px){.grid{grid-template-columns:1fr}}
+    .card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 12px 40px rgba(0,0,0,.10)}
+    .card h2{font-size:18px;color:#334155;margin-bottom:12px;display:flex;gap:8px;align-items:center}
+    .progress{width:100%;height:8px;background:#eef2ff;border-radius:999px;overflow:hidden;margin:12px 0}
+    .progress > div{height:100%;background:#4f46e5;width:0%;transition:background 0.3s}
+    .progress > div.overtime{background:#ef4444}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn{background:#3b82f6;color:#fff;border:none;padding:11px 16px;border-radius:999px;font-weight:800;cursor:pointer}
+    .btn:hover{filter:brightness(.95)}
+    .btn.primary{background:#22c55e}.btn.secondary{background:#6366f1}.btn.danger{background:#ef4444}.btn.hyper{background:#dc2626}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:12px}
+    @media(max-width:980px){.metrics{grid-template-columns:repeat(2,1fr)}}
+    .stat{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:10px;text-align:center}
+    .stat .v{font-weight:900}
+    .list{max-height:520px;overflow:auto}
+    .item{display:flex;align-items:center;gap:10px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:10px;margin-bottom:10px;cursor:pointer}
+    .item:hover{background:#f1f5f9}
+    .item.sel{background:#ecfeff;border-color:#06b6d4}
+    .emoji{font-size:22px}
+    .grow{flex:1}
+    .muted{color:#6b7280}
+    .legend{background:rgba(255,255,255,.9);border-radius:12px;padding:12px;margin-top:10px}
+    .legend div{display:flex;gap:8px;align-items:center}
+    .toast{position:fixed;right:18px;top:18px;background:#111827;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:0 14px 36px rgba(0,0,0,.25);opacity:0;transform:translateY(-10px);transition:.25s;z-index:2000}
+    .toast.show{opacity:1;transform:translateY(0)}
+    .toast.success{background:#16a34a}.toast.warn{background:#f59e0b}.toast.error{background:#ef4444}
+    .tag{display:inline-flex;gap:6px;align-items:center;background:#eef2ff;color:#4f46e5;border-radius:999px;padding:6px 10px;font-weight:700}
+    .order{display:flex;gap:6px;align-items:center}
+    .order .arrow{background:#e5e7eb;border:none;border-radius:8px;padding:6px 8px;cursor:pointer;font-weight:900}
+    .pill{background:#e5e7eb;border-radius:999px;padding:4px 8px;font-size:12px}
+    .tabs2{display:flex;gap:8px;margin-bottom:10px}
+    .t2{background:#eef2ff;border:none;border-radius:999px;padding:8px 12px;cursor:pointer;font-weight:700;color:#4f46e5}
+    .t2.active{background:#4f46e5;color:#fff}
+    .input,.select,.textarea{width:100%;border:2px solid #e5e7eb;border-radius:10px;padding:10px 12px}
+    .textarea{min-height:80px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media(max-width:980px){.grid2{grid-template-columns:1fr}}
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000}
+    .modal-card{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:16px;padding:24px;width:min(92%,520px)}
+    .color-picker{display:flex;gap:10px;margin-top:8px}
+    .color-option{width:44px;height:44px;border-radius:50%;border:3px solid transparent;display:flex;align-items:center;justify-content:center;font-size:20px;background:#f8fafc;cursor:pointer}
+    .color-option:hover{transform:scale(1.06);box-shadow:0 10px 18px rgba(0,0,0,.1)}
+    .color-option.selected{border-color:#4f46e5}
+    .planned-task-item{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;margin-bottom:8px;background:#f8fafc}
+    .planned-task-item.completed{background:#dcfce7}
+    .planned-task-item.in-progress{background:#fef3c7}
+    .planned-task-item.paused{background:#fed7aa}
+    /* Sliders */
+    .slider-container{margin-bottom:15px}
+    .slider{width:100%;height:6px;border-radius:3px;background:#e5e7eb;outline:none;-webkit-appearance:none}
+    .slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#4f46e5;cursor:pointer}
+    .slider-labels{display:flex;justify-content:space-between;margin-top:5px;font-size:12px;color:#6b7280}
+    .emoji-slider{display:flex;justify-content:space-between;margin-bottom:5px}
+    .emoji-slider span{font-size:24px;cursor:pointer;transition:transform 0.2s}
+    .emoji-slider span:hover{transform:scale(1.2)}
+    .emoji-slider span.active{transform:scale(1.3);filter:drop-shadow(0 0 5px rgba(79,70,229,0.5))}
+    /* Auth */
+    .auth-container{max-width:400px;margin:50px auto}
+    .auth-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 12px 40px rgba(0,0,0,.10)}
+    .auth-title{text-align:center;margin-bottom:20px;font-size:24px;font-weight:800}
+    .auth-links{text-align:center;margin-top:15px}
+    .auth-links a{color:#4f46e5;text-decoration:none}
+    .auth-links a:hover{text-decoration:underline}
+    /* Interrupções */
+    .interruption-item{background:#fef3c7;border-left:4px solid #f59e0b;padding:10px;margin-bottom:8px;border-radius:0 8px 8px 0}
+    .interruption-time{font-size:12px;color:#6b7280}
+    .interruption-reason{font-weight:700}
+  </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
     <div class="title">🧠 FocusFlow Pro</div>
   </div>
-
   <!-- Navegação -->
   <div class="nav">
     <button id="tabHoje" class="tab active">🏠 Hoje</button>
     <button id="tabTarefas" class="tab">📋 Tarefas</button>
+    <button id="tabConfig" class="tab">⚙️ Configurações</button>
+    <button id="tabInterruptions" class="tab">📊 Interrupções</button>
   </div>
-
   <!-- Relógio sempre visível -->
-  <div id="bigClock" class="big-clock">00:00:00</div>
-
+  <div id="bigClock" class="big-clock">00:00</div>
+  <div id="weekday" class="weekday"></div>
   <!-- Cronômetro -->
   <div class="timer-wrap">
     <div id="timerLabel" class="timer-label">Parado</div>
     <div id="timerValue" class="timer-value idle">00:00</div>
   </div>
-
   <!-- Página Hoje -->
   <div id="pageHoje">
     <div class="grid">
       <!-- Tarefa atual -->
       <div class="card">
         <h2>🎯 Tarefa atual</h2>
-        <div id="noTask" class="muted" style="text-align:center;padding:12px">Selecione uma tarefa “Planejada para hoje” ao lado</div>
+        <div id="noTask" class="muted" style="text-align:center;padding:12px">Selecione uma tarefa "Planejada para hoje" ao lado</div>
         <div id="taskCard" style="display:none">
           <div class="row" style="justify-content:space-between">
             <div id="taskTitle" style="font-weight:800"></div>
@@ -97,6 +130,8 @@
           <div class="progress"><div id="progressFill"></div></div>
           <div class="controls">
             <button id="btnStart" class="btn primary">▶️ Iniciar</button>
+            <button id="btnHyper" class="btn hyper">🔥 Hyperfocus</button>
+            <button id="btnPomodoro" class="btn secondary">🍅 Pomodoro</button>
             <button id="btnComplete" class="btn secondary">✅ Concluir</button>
             <button id="btnCancel" class="btn danger">✖️ Cancelar</button>
           </div>
@@ -105,12 +140,11 @@
             <div class="stat"><div class="v" id="m_plan">0 min</div><div class="muted">Planejado</div></div>
             <div class="stat"><div class="v" id="m_left">0 min</div><div class="muted">Restante</div></div>
             <div class="stat"><div class="v" id="m_pcount">0</div><div class="muted">Pausas</div></div>
-            <div class="stat"><div class="v" id="m_pmins">0 min</div><div class="muted">Tempo em pausas</div></div>
+            <div class="stat"><div class="v" id="m_interruptions">0</div><div class="muted">Interrupções</div></div>
           </div>
         </div>
       </div>
-
-      <!-- Planejadas para hoje (máx. 3) -->
+      <!-- Planejadas para hoje (com rolagem) -->
       <div class="card">
         <h2>🗓️ Planejadas para hoje</h2>
         <div id="plannedList" class="list"></div>
@@ -123,7 +157,6 @@
       </div>
     </div>
   </div>
-
   <!-- Página Tarefas -->
   <div id="pageTarefas" style="display:none">
     <div class="card">
@@ -135,30 +168,44 @@
         </div>
         <div>
           <label>Estimativa (min)</label>
-          <input id="f_est" type="number" class="input" value="50" min="5" step="5"/>
+          <input id="f_est" type="number" class="input" value="50" min="1" step="1"/>
         </div>
         <div>
           <label>Descrição</label>
           <textarea id="f_desc" class="textarea" placeholder="Detalhes..."></textarea>
         </div>
         <div>
+          <label>Tipo de tarefa</label>
+          <select id="f_color" class="select">
+            <option value="🔴">🔴 Conectado a outro humano</option>
+            <option value="🟠">🟠 Melhor que faça</option>
+            <option value="🟣">🟣 Me fazem bem (máx. 1/dia)</option>
+            <option value="🟢">🟢 Seria legal</option>
+          </select>
+        </div>
+        <div class="slider-container">
           <label>Prioridade</label>
-          <select id="f_pri" class="select"><option>Alta</option><option selected>Média</option><option>Baixa</option></select>
+          <input type="range" id="f_pri" class="slider" min="1" max="5" value="3">
+          <div class="slider-labels">
+            <span>Baixa</span>
+            <span>Média</span>
+            <span>Alta</span>
+          </div>
         </div>
-        <div>
-          <label>Energia</label>
-          <select id="f_energy" class="select"><option>Alta</option><option selected>Média</option><option>Baixa</option></select>
-        </div>
-        <div>
-          <label>Cor/Tipo</label>
-          <select id="f_color" class="select"><option>🔴</option><option selected>🟠</option><option>🟣</option><option>🟢</option></select>
+        <div class="slider-container">
+          <label>Energia necessária</label>
+          <div class="emoji-slider">
+            <span data-energy="1">😴</span>
+            <span data-energy="2">😐</span>
+            <span data-energy="3">😊</span>
+          </div>
+          <input type="range" id="f_energy" class="slider" min="1" max="3" value="2">
         </div>
       </div>
       <div class="row" style="margin-top:10px">
         <button class="btn primary" onclick="createTask()">Salvar</button>
       </div>
     </div>
-
     <div class="card" style="margin-top:12px">
       <h2>📋 Gerenciar</h2>
       <div class="tabs2">
@@ -169,28 +216,254 @@
       <div id="manageList" class="list"></div>
     </div>
   </div>
+  <!-- Página Configurações -->
+  <div id="pageConfig" style="display:none">
+    <div class="card">
+      <h2>⚙️ Configurações</h2>
+      <div class="grid2">
+        <div>
+          <label>Cor da tarefa atual</label>
+          <input type="color" id="cfgCurrentTaskColor" value="#4f46e5">
+        </div>
+        <div>
+          <label>Cor do fundo da página</label>
+          <input type="color" id="cfgPageBackground" value="#667eea">
+        </div>
+        <div>
+          <label>Cor do relógio</label>
+          <input type="color" id="cfgClockColor" value="#ffffff">
+        </div>
+        <div>
+          <label>Cor do timer</label>
+          <input type="color" id="cfgTimerColor" value="#ffffff">
+        </div>
+        <div>
+          <label>Tamanho da fonte do timer (px)</label>
+          <input type="number" id="cfgTimerFontSize" value="80" min="40" max="120">
+        </div>
+        <div>
+          <label>Tamanho da fonte do relógio (px)</label>
+          <input type="number" id="cfgClockFontSize" value="28" min="20" max="60">
+        </div>
+      </div>
+      <div style="margin-top:10px">
+        <label>
+          <input type="checkbox" id="cfgShowWeekday" checked>
+          Mostrar dia da semana e data
+        </label>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn primary" onclick="saveConfig()">Salvar</button>
+      </div>
+    </div>
+  </div>
+  <!-- Página Interrupções -->
+  <div id="pageInterruptions" style="display:none">
+    <div class="card">
+      <h2>📊 Registro de Interrupções</h2>
+      <div id="interruptionsList" class="list"></div>
+    </div>
+  </div>
 </div>
-
+<!-- Modal de Edição -->
+<div id="editModal" class="modal">
+  <div class="modal-card">
+    <h2>✏️ Editar Tarefa</h2>
+    <div class="grid2">
+      <div>
+        <label>Título *</label>
+        <input id="e_title" class="input"/>
+      </div>
+      <div>
+        <label>Estimativa (min)</label>
+        <input id="e_est" type="number" class="input"/>
+      </div>
+      <div>
+        <label>Descrição</label>
+        <textarea id="e_desc" class="textarea"></textarea>
+      </div>
+      <div>
+        <label>Tipo de tarefa</label>
+        <select id="e_color" class="select">
+          <option value="🔴">🔴 Conectado a outro humano</option>
+          <option value="🟠">🟠 Melhor que faça</option>
+          <option value="🟣">🟣 Me fazem bem (máx. 1/dia)</option>
+          <option value="🟢">🟢 Seria legal</option>
+        </select>
+      </div>
+      <div class="slider-container">
+        <label>Prioridade</label>
+        <input type="range" id="e_pri" class="slider" min="1" max="5" value="3">
+        <div class="slider-labels">
+          <span>Baixa</span>
+          <span>Média</span>
+          <span>Alta</span>
+        </div>
+      </div>
+      <div class="slider-container">
+        <label>Energia necessária</label>
+        <div class="emoji-slider">
+          <span data-energy="1">😴</span>
+          <span data-energy="2">😐</span>
+          <span data-energy="3">😊</span>
+        </div>
+        <input type="range" id="e_energy" class="slider" min="1" max="3" value="2">
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn primary" onclick="saveEditTask()">Salvar</button>
+      <button class="btn" onclick="closeEditModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+<!-- Modal Pomodoro -->
+<div id="pomodoroModal" class="modal">
+  <div class="modal-card">
+    <h2>🍅 Configuração Pomodoro</h2>
+    <div class="grid2">
+      <div>
+        <label>Tempo de foco (minutos)</label>
+        <input type="number" id="pomoFocus" class="input" value="25" min="1" max="60">
+      </div>
+      <div>
+        <label>Tempo de pausa (minutos)</label>
+        <input type="number" id="pomoBreak" class="input" value="5" min="1" max="30">
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn primary" onclick="savePomodoroConfig()">Salvar</button>
+      <button class="btn" onclick="closePomodoroModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+<!-- Modal Login -->
+<div id="loginModal" class="modal">
+  <div class="modal-card">
+    <h2>🔐 Login</h2>
+    <div class="grid2">
+      <div>
+        <label>E-mail</label>
+        <input type="email" id="loginEmail" class="input" placeholder="seu@email.com">
+      </div>
+      <div>
+        <label>Senha</label>
+        <input type="password" id="loginPassword" class="input" placeholder="••••••••">
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn primary" onclick="loginUser()">Entrar</button>
+    </div>
+    <div class="auth-links">
+      <a href="#" onclick="showRegister(); return false;">Criar uma conta</a>
+    </div>
+  </div>
+</div>
+<!-- Modal Register -->
+<div id="registerModal" class="modal">
+  <div class="modal-card">
+    <h2>📝 Criar Conta</h2>
+    <div class="grid2">
+      <div>
+        <label>Nome</label>
+        <input type="text" id="regName" class="input" placeholder="Seu nome">
+      </div>
+      <div>
+        <label>E-mail</label>
+        <input type="email" id="regEmail" class="input" placeholder="seu@email.com">
+      </div>
+      <div>
+        <label>Senha</label>
+        <input type="password" id="regPassword" class="input" placeholder="••••••••">
+      </div>
+      <div>
+        <label>Confirmar senha</label>
+        <input type="password" id="regPasswordConfirm" class="input" placeholder="••••••••">
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn primary" onclick="registerUser()">Criar conta</button>
+    </div>
+    <div class="auth-links">
+      <a href="#" onclick="showLogin(); return false;">Já tenho uma conta</a>
+    </div>
+  </div>
+</div>
 <div id="toast" class="toast">OK</div>
-
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script>
+/* ===== Firebase Config ===== */
+const firebaseConfig = {
+  apiKey: "AIzaSyA0s8y2q0XW3x3x3x3x3x3x3x3x3x3x3x3x",
+  authDomain: "focusflow-pro.firebaseapp.com",
+  projectId: "focusflow-pro",
+  storageBucket: "focusflow-pro.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef123456"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
 /* ===== Estado/Persistência ===== */
-const STORAGE='focusflow-v6';
-const POMO_FOCUS=25*60, POMO_BREAK=5*60;
+const STORAGE='focusflow-v10';
+const POMO_FOCUS=25*60, POMO_BREAK=5*60, HYPER_FOCUS=45*60, HYPER_BREAK=10*60;
 let S={
-  tasks:[],         // {id,title,desc,color,priority,energy,estimate,status,created,focusMinutes,breakMinutes,breakCount,startedDates:[],plannedToday:false,orderToday:0}
+  tasks:[],         // {id,title,desc,color,priority,energy,estimate,status,created,focusMinutes,breakMinutes,breakCount,startedDates:[],plannedToday:false,orderToday:0,interruptedBy:null,interruptedAt:null,interruptions:[],pomodoroConfig:{focus:25,break:5}}
   current:null,     // id da tarefa selecionada (aba Hoje)
-  mode:'idle',      // idle|focus|break
+  mode:'idle',      // idle|focus|break|hyperfocus
   timer:null,
   timeLeft:0,       // countdown do foco
   breakElapsed:0,   // countup da pausa (com countdown visual até 0 e depois overrun)
   breakPlanned:POMO_BREAK,
   breakBeeped:false,
-  cycle:1
+  cycle:1,
+  ui: {
+    activeTab: 'hoje',
+    editingTaskId: null
+  },
+  config: {
+    currentTaskColor: '#4f46e5',
+    pageBackground: 'linear-gradient(135deg,#667eea 0%,#764ba2 100%)',
+    clockColor: '#ffffff',
+    timerColor: '#ffffff',
+    timerFontSize: '80px',
+    clockFontSize: '28px',
+    showWeekday: true
+  },
+  user: null
 };
-function save(){ localStorage.setItem(STORAGE, JSON.stringify({...S,timer:null})) }
-function load(){ const r=localStorage.getItem(STORAGE); if(r){ try{ Object.assign(S, JSON.parse(r)); }catch{} } renderAll(); }
-
+function save(){ 
+  localStorage.setItem(STORAGE, JSON.stringify({...S,timer:null,ui:{...S.ui},config:{...S.config}})); 
+  syncWithFirestore();
+}
+function load(){ 
+  const r=localStorage.getItem(STORAGE); 
+  if(r){ 
+    try{ 
+      const data = JSON.parse(r);
+      Object.assign(S, data);
+      if (!S.config) {
+        S.config = {
+          currentTaskColor: '#4f46e5',
+          pageBackground: 'linear-gradient(135deg,#667eea 0%,#764ba2 100%)',
+          clockColor: '#ffffff',
+          timerColor: '#ffffff',
+          timerFontSize: '80px',
+          clockFontSize: '28px',
+          showWeekday: true
+        };
+      }
+    }catch(e){
+      console.error("Erro ao carregar dados:", e);
+    }
+  }
+  applyConfig();
+  checkAuth();
+  renderAll();
+}
 /* ===== Util ===== */
 const $=sel=>document.querySelector(sel);
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8) }
@@ -202,26 +475,206 @@ function hasPurpleStartedToday(excludeId=null){
   return S.tasks.some(t => t.color==='🟣' && t.id!==excludeId && Array.isArray(t.startedDates) && t.startedDates.some(d => new Date(d).toDateString()===todayStr()));
 }
 function getCurrent(){ return S.tasks.find(t=>t.id===S.current)||null }
-
-/* ===== Relógio HH:MM:SS ===== */
-function tickClock(){ const n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0'); $("#bigClock").textContent=`${h}:${m}:${s}` }
+/* ===== Relógio HH:MM + Dia da Semana ===== */
+function tickClock(){ 
+  const n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0');
+  $("#bigClock").textContent=`${h}:${m}`;
+  if (S.config.showWeekday) {
+    const weekday = n.toLocaleDateString('en-US', { weekday: 'short' });
+    const day = n.getDate();
+    $("#weekday").textContent = `${weekday} - ${day}`;
+    $("#weekday").style.display = 'block';
+  } else {
+    $("#weekday").style.display = 'none';
+  }
+}
 setInterval(tickClock,1000); tickClock();
-
+/* ===== Configurações ===== */
+function applyConfig() {
+  document.body.style.background = S.config.pageBackground;
+  $("#bigClock").style.color = S.config.clockColor;
+  $("#bigClock").style.fontSize = S.config.clockFontSize;
+  $("#timerValue").style.color = S.config.timerColor;
+  $("#timerValue").style.fontSize = S.config.timerFontSize;
+  
+  if (S.config.showWeekday) {
+    $("#weekday").style.display = 'block';
+  } else {
+    $("#weekday").style.display = 'none';
+  }
+}
+function saveConfig() {
+  S.config.currentTaskColor = $("#cfgCurrentTaskColor").value;
+  S.config.pageBackground = `linear-gradient(135deg,${$("#cfgPageBackground").value} 0%,#764ba2 100%)`;
+  S.config.clockColor = $("#cfgClockColor").value;
+  S.config.timerColor = $("#cfgTimerColor").value;
+  S.config.timerFontSize = $("#cfgTimerFontSize").value + 'px';
+  S.config.clockFontSize = $("#cfgClockFontSize").value + 'px';
+  S.config.showWeekday = $("#cfgShowWeekday").checked;
+  save();
+  applyConfig();
+  toast('✅ Configurações salvas!');
+}
+/* ===== Autenticação ===== */
+function checkAuth() {
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      S.user = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName
+      };
+      loadUserData();
+    } else {
+      S.user = null;
+      showLogin();
+    }
+  });
+}
+function loadUserData() {
+  if (!S.user) return;
+  
+  db.collection('users').doc(S.user.uid).get().then(doc => {
+    if (doc.exists) {
+      const userData = doc.data();
+      S.tasks = userData.tasks || [];
+      S.config = {...S.config, ...userData.preferences};
+      applyConfig();
+      renderAll();
+    }
+  }).catch(error => {
+    console.error("Erro ao carregar dados do usuário:", error);
+  });
+}
+function syncWithFirestore() {
+  if (!S.user) return;
+  
+  db.collection('users').doc(S.user.uid).update({
+    tasks: S.tasks,
+    preferences: S.config,
+    lastSync: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(error => {
+    console.error("Erro ao sincronizar com Firestore:", error);
+  });
+}
+function showLogin() {
+  $("#loginModal").style.display = 'block';
+  $("#registerModal").style.display = 'none';
+}
+function showRegister() {
+  $("#registerModal").style.display = 'block';
+  $("#loginModal").style.display = 'none';
+}
+function closeLogin() {
+  $("#loginModal").style.display = 'none';
+}
+function closeRegister() {
+  $("#registerModal").style.display = 'none';
+}
+function registerUser() {
+  const name = $("#regName").value.trim();
+  const email = $("#regEmail").value.trim();
+  const password = $("#regPassword").value;
+  const confirmPassword = $("#regPasswordConfirm").value;
+  
+  if (!name || !email || !password) {
+    toast('Preencha todos os campos', 'error');
+    return;
+  }
+  
+  if (password !== confirmPassword) {
+    toast('As senhas não coincidem', 'error');
+    return;
+  }
+  
+  auth.createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      return userCredential.user.updateProfile({
+        displayName: name
+      });
+    })
+    .then(() => {
+      return db.collection('users').doc(auth.currentUser.uid).set({
+        name: name,
+        email: email,
+        preferences: S.config,
+        tasks: [],
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    })
+    .then(() => {
+      toast('✅ Conta criada com sucesso!');
+      closeRegister();
+    })
+    .catch((error) => {
+      toast('❌ Erro ao criar conta: ' + error.message, 'error');
+    });
+}
+function loginUser() {
+  const email = $("#loginEmail").value.trim();
+  const password = $("#loginPassword").value;
+  
+  if (!email || !password) {
+    toast('Preencha todos os campos', 'error');
+    return;
+  }
+  
+  auth.signInWithEmailAndPassword(email, password)
+    .then(() => {
+      toast('✅ Login realizado com sucesso!');
+      closeLogin();
+    })
+    .catch((error) => {
+      toast('❌ Erro ao fazer login: ' + error.message, 'error');
+    });
+}
+function logoutUser() {
+  auth.signOut().then(() => {
+    toast('👋 Você saiu da sua conta');
+    S.user = null;
+    S.tasks = [];
+    renderAll();
+  });
+}
 /* ===== Navegação ===== */
-$("#tabHoje").onclick=()=>{ $("#tabHoje").classList.add('active'); $("#tabTarefas").classList.remove('active'); $("#pageHoje").style.display='block'; $("#pageTarefas").style.display='none'; }
-$("#tabTarefas").onclick=()=>{ $("#tabTarefas").classList.add('active'); $("#tabHoje").classList.remove('active'); $("#pageHoje").style.display='none'; $("#pageTarefas").style.display='block'; renderManage(); }
-
+$("#tabHoje").onclick=()=>{ S.ui.activeTab='hoje'; save(); $("#tabHoje").classList.add('active'); $("#tabTarefas").classList.remove('active'); $("#tabConfig").classList.remove('active'); $("#tabInterruptions").classList.remove('active'); $("#pageHoje").style.display='block'; $("#pageTarefas").style.display='none'; $("#pageConfig").style.display='none'; $("#pageInterruptions").style.display='none'; }
+$("#tabTarefas").onclick=()=>{ S.ui.activeTab='tarefas'; save(); $("#tabTarefas").classList.add('active'); $("#tabHoje").classList.remove('active'); $("#tabConfig").classList.remove('active'); $("#tabInterruptions").classList.remove('active'); $("#pageHoje").style.display='none'; $("#pageTarefas").style.display='block'; $("#pageConfig").style.display='none'; $("#pageInterruptions").style.display='none'; renderManage(); }
+$("#tabConfig").onclick=()=>{ S.ui.activeTab='config'; save(); $("#tabConfig").classList.add('active'); $("#tabHoje").classList.remove('active'); $("#tabTarefas").classList.remove('active'); $("#tabInterruptions").classList.remove('active'); $("#pageHoje").style.display='none'; $("#pageTarefas").style.display='none'; $("#pageConfig").style.display='block'; $("#pageInterruptions").style.display='none'; loadConfigForm(); }
+$("#tabInterruptions").onclick=()=>{ S.ui.activeTab='interruptions'; save(); $("#tabInterruptions").classList.add('active'); $("#tabHoje").classList.remove('active'); $("#tabTarefas").classList.remove('active'); $("#tabConfig").classList.remove('active'); $("#pageHoje").style.display='none'; $("#pageTarefas").style.display='none'; $("#pageConfig").style.display='none'; $("#pageInterruptions").style.display='block'; renderInterruptions(); }
+function loadConfigForm() {
+  $("#cfgCurrentTaskColor").value = S.config.currentTaskColor;
+  $("#cfgPageBackground").value = S.config.pageBackground.match(/#[0-9a-f]{6}/i)[0];
+  $("#cfgClockColor").value = S.config.clockColor;
+  $("#cfgTimerColor").value = S.config.timerColor;
+  $("#cfgTimerFontSize").value = parseInt(S.config.timerFontSize);
+  $("#cfgClockFontSize").value = parseInt(S.config.clockFontSize);
+  $("#cfgShowWeekday").checked = S.config.showWeekday;
+}
 /* ===== Timer Engine ===== */
 function clearTimer(){ if(S.timer){ clearInterval(S.timer); S.timer=null; } }
 function startFocus(){
   S.mode='focus'; S.timeLeft=POMO_FOCUS; clearTimer();
   S.timer=setInterval(()=>{
     S.timeLeft--;
+    checkTaskTime();
     if(S.timeLeft<=0){
       clearTimer();
-      // Fim do foco → registra 25 min e entra no break
       const t=getCurrent(); if(t){ t.focusMinutes=(t.focusMinutes||0)+25; save(); }
       playBeep(); startBreak();
+    }
+    renderTimer();
+  },1000);
+  renderTimer();
+}
+function startHyperfocus(){
+  S.mode='hyperfocus'; S.timeLeft=HYPER_FOCUS; clearTimer();
+  S.timer=setInterval(()=>{
+    S.timeLeft--;
+    checkTaskTime();
+    if(S.timeLeft<=0){
+      clearTimer();
+      const t=getCurrent(); if(t){ t.focusMinutes=(t.focusMinutes||0)+45; save(); }
+      playBeep(); startHyperBreak();
     }
     renderTimer();
   },1000);
@@ -231,7 +684,15 @@ function startBreak(){
   S.mode='break'; S.breakElapsed=0; S.breakPlanned=POMO_BREAK; S.breakBeeped=false; clearTimer();
   S.timer=setInterval(()=>{
     S.breakElapsed++;
-    // Beep quando “atinge” o planejado; continua em overrun
+    if(!S.breakBeeped && S.breakElapsed>=S.breakPlanned){ playBeep(); S.breakBeeped=true; }
+    renderTimer();
+  },1000);
+  renderTimer();
+}
+function startHyperBreak(){
+  S.mode='break'; S.breakElapsed=0; S.breakPlanned=HYPER_BREAK; S.breakBeeped=false; clearTimer();
+  S.timer=setInterval(()=>{
+    S.breakElapsed++;
     if(!S.breakBeeped && S.breakElapsed>=S.breakPlanned){ playBeep(); S.breakBeeped=true; }
     renderTimer();
   },1000);
@@ -249,51 +710,172 @@ function closeBreakAndNextCycle(){
 }
 function stopAll(){ clearTimer(); S.mode='idle'; S.timeLeft=0; S.breakElapsed=0; renderTimer(); }
 function playBeep(){ try{ const C=new (window.AudioContext||window.webkitAudioContext)(),o=C.createOscillator(),g=C.createGain(); o.type='sine'; o.frequency.value=880; o.connect(g); g.connect(C.destination); g.gain.setValueAtTime(.001,C.currentTime); g.gain.exponentialRampToValueAtTime(.2,C.currentTime+.01); o.start(); o.stop(C.currentTime+.22); }catch{} }
-
-/* ===== Ações do Botão Principal =====
-   - idle→focus: iniciar (regra roxa)
-   - break→focus: fecha pausa, soma tempo e inicia novo ciclo
-   - focus→interromper: encerra foco, soma tempo decorrido e volta a idle
-*/
+function checkTaskTime(){
+  const t = getCurrent();
+  if(!t) return;
+  
+  const estimatedSeconds = t.estimate * 60;
+  const remainingTime = S.mode === 'focus' ? S.timeLeft : 
+                       S.mode === 'hyperfocus' ? S.timeLeft : null;
+  
+  if(remainingTime && estimatedSeconds < remainingTime){
+    const progressFill = $("#progressFill");
+    progressFill.classList.add('overtime');
+    
+    if(!t.timeWarningShown){
+      toast(`⚠️ A tarefa estima apenas ${t.estimate}min, mas o timer é maior`, 'warn');
+      t.timeWarningShown = true;
+    }
+  } else {
+    const progressFill = $("#progressFill");
+    progressFill.classList.remove('overtime');
+  }
+}
+/* ===== Ações do Botão Principal ===== */
 function onStartClick(){
   const t=getCurrent(); if(!t) return;
-
-  if(S.mode==='focus'){
-    // Interromper/Pausar ciclo: registrar tempo decorrido deste foco e voltar a idle
-    const decorrido = POMO_FOCUS - S.timeLeft; // seg
+  if(S.mode==='focus' || S.mode==='hyperfocus'){
+    const decorrido = (S.mode === 'focus' ? POMO_FOCUS : HYPER_FOCUS) - S.timeLeft;
     const addMin = Math.max(0, Math.ceil(decorrido/60));
     if(addMin>0){ t.focusMinutes=(t.focusMinutes||0)+addMin; }
     stopAll(); toast('⏸️ Ciclo interrompido. Você pode iniciar novamente quando quiser.','warn');
     save(); renderAll(); return;
   }
-
-  // Regras antes de iniciar Foco
   const startedTodayThis = (t.startedDates||[]).some(d => new Date(d).toDateString()===todayStr());
   if(t.color==='🟣' && !startedTodayThis && hasPurpleStartedToday(t.id)){
-    toast('⚠️ Já existe tarefa roxa iniciada hoje. Retome a mesma ou deixe para amanhã.','warn'); return;
+    toast('⚠️ Já existe uma tarefa roxa iniciada hoje. Retome a mesma ou deixe para amanhã.','warn'); return;
   }
-
-  // Se está em break → fechar pausa e iniciar novo ciclo
   if(S.mode==='break'){ closeBreakAndNextCycle(); renderAll(); return; }
-
-  // idle → iniciar foco
   t.status='doing'; t.startedDates=t.startedDates||[]; t.startedDates.push(new Date().toISOString()); save();
   startFocus(); toast(`⏰ Foco iniciado (ciclo ${S.cycle})`);
 }
-
+function onHyperClick(){
+  const t=getCurrent(); if(!t) return;
+  if(S.mode==='focus' || S.mode==='hyperfocus'){
+    const decorrido = (S.mode === 'focus' ? POMO_FOCUS : HYPER_FOCUS) - S.timeLeft;
+    const addMin = Math.max(0, Math.ceil(decorrido/60));
+    if(addMin>0){ t.focusMinutes=(t.focusMinutes||0)+addMin; }
+    stopAll(); toast('⏸️ Hyperfoco interrompido.','warn');
+    save(); renderAll(); return;
+  }
+  if(S.mode==='break') closeBreakAndResetOnly();
+  stopAll();
+  startHyperfocus();
+  toast('🔥 Hyperfoco iniciado!');
+}
+function onPomodoroClick(){
+  const t = getCurrent();
+  if(!t) {
+    toast('Selecione uma tarefa primeiro', 'warn');
+    return;
+  }
+  
+  $("#pomodoroModal").style.display = 'block';
+  $("#pomoFocus").value = t.pomodoroConfig ? t.pomodoroConfig.focus : 25;
+  $("#pomoBreak").value = t.pomodoroConfig ? t.pomodoroConfig.break : 5;
+}
+function savePomodoroConfig(){
+  const t = getCurrent();
+  if(!t) return;
+  
+  const focusMinutes = parseInt($("#pomoFocus").value);
+  const breakMinutes = parseInt($("#pomoBreak").value);
+  
+  // Salvar configuração do pomodoro na tarefa
+  t.pomodoroConfig = {
+    focus: focusMinutes,
+    break: breakMinutes
+  };
+  
+  // Recalcular ciclos planejados
+  t.cyclesPlanned = Math.ceil(t.estimate / focusMinutes);
+  
+  closePomodoroModal();
+  save();
+  renderCurrent();
+  toast('🍅 Configuração Pomodoro atualizada!');
+}
+function closePomodoroModal(){
+  $("#pomodoroModal").style.display = 'none';
+}
+function closeBreakAndResetOnly(){
+  const t=getCurrent(); if(!t) return;
+  t.breakMinutes=(t.breakMinutes||0)+Math.ceil((S.breakElapsed||0)/60);
+  t.breakCount=(t.breakCount||0)+1;
+  save();
+}
 /* ===== CRUD Tarefas / Planejar Hoje ===== */
 function createTask(){
   const title=$("#f_title").value.trim(); if(!title){ toast('Informe um título','error'); return; }
   const est=parseInt($("#f_est").value)||25;
-  const t={ id:uid(), title, desc:$("#f_desc").value.trim(), color:$("#f_color").value, priority:$("#f_pri").value, energy:$("#f_energy").value,
-            estimate:est, status:'todo', created:new Date().toISOString(),
-            focusMinutes:0, breakMinutes:0, breakCount:0, startedDates:[], plannedToday:false, orderToday:0 };
+  const t={ 
+    id:uid(), 
+    title, 
+    desc:$("#f_desc").value.trim(), 
+    color:$("#f_color").value, 
+    priority:parseInt($("#f_pri").value), 
+    energy:parseInt($("#f_energy").value),
+    estimate:est, 
+    status:'todo', 
+    created:new Date().toISOString(),
+    focusMinutes:0, 
+    breakMinutes:0, 
+    breakCount:0, 
+    startedDates:[], 
+    plannedToday:false, 
+    orderToday:0,
+    interruptions:[],
+    pomodoroConfig: {
+      focus: 25,
+      break: 5
+    }
+  };
   S.tasks.unshift(t); save(); $("#f_title").value=''; $("#f_desc").value=''; $("#f_est").value=50; renderManage(); toast('✅ Tarefa criada!');
 }
+function openEditTask(id){
+  const t=S.tasks.find(x=>x.id===id); if(!t) return;
+  S.ui.editingTaskId=id;
+  $("#e_title").value=t.title; 
+  $("#e_desc").value=t.desc; 
+  $("#e_est").value=t.estimate;
+  $("#e_color").value=t.color;
+  $("#e_pri").value=t.priority;
+  $("#e_energy").value=t.energy;
+  $("#editModal").style.display='block';
+  
+  // Atualizar emoji slider
+  updateEmojiSlider($("#e_energy").value);
+}
+function saveEditTask(){
+  const t=S.tasks.find(x=>x.id===S.ui.editingTaskId); if(!t) return;
+  t.title=$("#e_title").value.trim(); 
+  t.desc=$("#e_desc").value.trim(); 
+  t.estimate=parseInt($("#e_est").value)||25;
+  t.color=$("#e_color").value;
+  t.priority=parseInt($("#e_pri").value);
+  t.energy=parseInt($("#e_energy").value);
+  save(); closeEditModal(); renderManage(); renderPlanned(); toast('✅ Tarefa atualizada!');
+}
+function closeEditModal(){ $("#editModal").style.display='none'; S.ui.editingTaskId=null; }
 function selectPlanned(id, planned){
   const t=S.tasks.find(x=>x.id===id); if(!t) return;
+  
+  // Validar tarefa roxa
+  if(planned && t.color==='🟣'){
+    const purpleToday = S.tasks.filter(task => 
+      task.color==='🟣' && 
+      task.plannedToday && 
+      task.id !== id &&
+      Array.isArray(task.startedDates) && 
+      task.startedDates.some(d => new Date(d).toDateString() === todayStr())
+    );
+    if(purpleToday.length > 0){
+      toast('⚠️ Já existe uma tarefa roxa planejada para hoje.', 'warn');
+      return;
+    }
+  }
+  
   t.plannedToday=planned;
-  // dar ordem sequencial ao adicionar
   if(planned){ t.orderToday = 1 + Math.max(0, ...S.tasks.filter(z=>z.plannedToday).map(z=>z.orderToday||0)); }
   save(); renderPlanned(); renderManage();
 }
@@ -305,17 +887,38 @@ function movePlanned(id, delta){
   const tmp=a.orderToday; a.orderToday=b.orderToday; b.orderToday=tmp;
   save(); renderPlanned();
 }
-function selectCurrent(id){ S.current=id; S.cycle=1; stopAll(); renderAll(); }
-
+function selectCurrent(id){
+  const previous = getCurrent();
+  if (previous && previous.status === 'doing' && S.mode !== 'idle') {
+    // Registrar interrupção
+    const interruption = {
+      at: new Date().toISOString(),
+      reason: 'Troca de tarefa',
+      interruptedBy: id,
+      focusTime: (previous.focusMinutes || 0) * 60 + (S.mode === 'focus' ? POMO_FOCUS - S.timeLeft : HYPER_FOCUS - S.timeLeft),
+      mode: S.mode
+    };
+    
+    if(!previous.interruptions) previous.interruptions = [];
+    previous.interruptions.push(interruption);
+    
+    const interruptor = S.tasks.find(x => x.id === id);
+    toast(`⏸️ Tarefa "${previous.title}" interrompida por "${interruptor?.title || 'desconhecida'}"`, 'warn');
+  }
+  S.current=id; S.cycle=1; stopAll(); renderAll();
+}
 /* ===== Render Hoje ===== */
 function renderTimer(){
   const label=$("#timerLabel"), value=$("#timerValue"), bar=$("#progressFill");
   if(S.mode==='focus'){
     label.textContent='Foco'; value.className='timer-value focus'; value.textContent=mmss(S.timeLeft);
     bar.style.width=`${(1 - S.timeLeft/POMO_FOCUS)*100}%`;
+  } else if(S.mode==='hyperfocus'){
+    label.textContent='Hyperfocus'; value.className='timer-value hyperfocus'; value.textContent=mmss(S.timeLeft);
+    bar.style.width=`${(1 - S.timeLeft/HYPER_FOCUS)*100}%`;
   } else if(S.mode==='break'){
     label.textContent='Intervalo'; value.className='timer-value break';
-    value.textContent = mmssOver(S.breakPlanned, S.breakElapsed); // countdown até 0, depois +overrun
+    value.textContent = mmssOver(S.breakPlanned, S.breakElapsed);
     const p=Math.min(1, S.breakElapsed/S.breakPlanned); bar.style.width=`${p*100}%`;
   } else {
     label.textContent='Parado'; value.className='timer-value idle'; value.textContent='00:00'; bar.style.width='0%';
@@ -323,10 +926,10 @@ function renderTimer(){
 }
 function renderPlanned(){
   const el=$("#plannedList");
-  const today=S.tasks.filter(t=>t.plannedToday).sort((a,b)=>(a.orderToday||0)-(b.orderToday||0)).slice(0,3);
-  if(!today.length){ el.innerHTML='<div class="muted" style="text-align:center;padding:12px">Sem tarefas planejadas. Marque-as na aba “Tarefas”.</div>'; return; }
+  const today=S.tasks.filter(t=>t.plannedToday).sort((a,b)=>(a.orderToday||0)-(b.orderToday||0));
+  if(!today.length){ el.innerHTML='<div class="muted" style="text-align:center;padding:12px">Sem tarefas planejadas. Marque-as na aba "Tarefas".</div>'; return; }
   el.innerHTML = today.map((t,i)=>`
-    <div class="item ${S.current===t.id?'sel':''}">
+    <div class="planned-task-item ${S.current===t.id?'sel':''} ${t.status==='completed'?'completed':''} ${S.current===t.id&&S.mode==='focus'?'in-progress':''} ${S.current===t.id&&S.mode==='break'?'paused':''}">
       <div class="emoji">${t.color}</div>
       <div class="grow">
         <div style="display:flex;justify-content:space-between;align-items:center">
@@ -337,6 +940,7 @@ function renderPlanned(){
           </div>
         </div>
         <div class="muted">${t.priority} • ${t.energy} • ~${t.estimate}min ${t.status==='doing'?'• Em andamento':''}</div>
+        ${t.interruptedBy ? `<div class="muted">Interrompida por: ${S.tasks.find(x=>x.id===t.interruptedBy)?.title || 'desconhecida'}</div>` : ''}
       </div>
       <button class="btn" onclick="selectCurrent('${t.id}')">🎯 Focar</button>
     </div>
@@ -347,28 +951,29 @@ function renderCurrent(){
   if(!t){ none.style.display='block'; card.style.display='none'; renderTimer(); return; }
   none.style.display='none'; card.style.display='block';
   $("#taskTitle").textContent=`${t.color} ${t.title}`;
-  const plannedCycles = Math.max(1, Math.ceil((t.estimate||25)/25));
+  const plannedCycles = t.cyclesPlanned || Math.max(1, Math.ceil((t.estimate||25)/25));
   $("#taskCycle").textContent=`Ciclo ${S.cycle}/${plannedCycles}`;
-  $("#taskMeta").textContent=`${t.priority} • ${t.energy}`;
-  // Botão principal (muda label conforme modo)
+  $("#taskMeta").textContent=`Prioridade: ${t.priority} • Energia: ${t.energy}`;
   const btn=$("#btnStart");
-  btn.textContent = (S.mode==='focus') ? '⏸️ Interromper/Pausar ciclo' : (S.mode==='break' ? '▶️ Iniciar novo ciclo' : `▶️ Iniciar ciclo ${S.cycle}`);
+  btn.textContent = (S.mode==='focus' || S.mode==='hyperfocus') ? '⏸️ Interromper/Pausar ciclo' : (S.mode==='break' ? '▶️ Iniciar novo ciclo' : `▶️ Iniciar ciclo ${S.cycle}/${plannedCycles}`);
   btn.onclick=onStartClick;
+  $("#btnHyper").onclick=onHyperClick;
+  $("#btnPomodoro").onclick=onPomodoroClick;
   $("#btnComplete").onclick=()=>{ completeTask(); };
   $("#btnCancel").onclick=()=>{ cancelTask(); };
-  // Métricas
   const done=t.focusMinutes||0, plan=t.estimate||0, left=Math.max(0, plan-done);
   $("#m_done").textContent=`${done} min`; $("#m_plan").textContent=`${plan} min`; $("#m_left").textContent=`${left} min`;
-  $("#m_pcount").textContent=`${t.breakCount||0}`; $("#m_pmins").textContent=`${t.breakMinutes||0} min`;
+  $("#m_pcount").textContent=`${t.breakCount||0}`; 
+  $("#m_interruptions").textContent=`${t.interruptions ? t.interruptions.length : 0}`;
   renderTimer();
 }
 function completeTask(){
   const t=getCurrent(); if(!t) return;
-  if(S.mode==='focus'){ // somar foco parcial
-    const decorrido = POMO_FOCUS - S.timeLeft;
+  if(S.mode==='focus' || S.mode==='hyperfocus'){
+    const decorrido = (S.mode === 'focus' ? POMO_FOCUS : HYPER_FOCUS) - S.timeLeft;
     const addMin = Math.max(0, Math.ceil(decorrido/60));
     if(addMin>0){ t.focusMinutes=(t.focusMinutes||0)+addMin; }
-  } else if(S.mode==='break'){ // fechar pausa antes
+  } else if(S.mode==='break'){
     const mins=Math.ceil((S.breakElapsed||0)/60);
     t.breakMinutes=(t.breakMinutes||0)+mins; t.breakCount=(t.breakCount||0)+1;
   }
@@ -379,9 +984,8 @@ function cancelTask(){
   stopAll(); t.status='cancelled'; S.current=null; save(); renderAll(); toast('✖️ Tarefa cancelada');
 }
 function renderHoje(){ renderPlanned(); renderCurrent(); }
-
-/* ===== Página Tarefas (inclui Concluídas) ===== */ 
-let MANAGE_FILTER='open'; // open|completed|cancelled
+/* ===== Página Tarefas (inclui Concluídas) ===== */
+let MANAGE_FILTER='open';
 $("#fltAll").onclick=()=>{MANAGE_FILTER='open'; setManageTabs(); renderManage();}
 $("#fltCompleted").onclick=()=>{MANAGE_FILTER='completed'; setManageTabs(); renderManage();}
 $("#fltCancelled").onclick=()=>{MANAGE_FILTER='cancelled'; setManageTabs(); renderManage();}
@@ -405,26 +1009,97 @@ function renderManage(){
           <div style="font-weight:800">${t.title}</div>
           <div class="tag">${t.status}</div>
         </div>
-        <div class="muted">${t.priority} • ${t.energy} • ~${t.estimate}min</div>
+        <div class="muted">Prioridade: ${t.priority} • Energia: ${t.energy} • ~${t.estimate}min</div>
         <div class="row" style="margin-top:6px;gap:8px">
           <span class="muted">Planejada hoje:</span>
           <button class="btn" style="padding:6px 10px" onclick="selectPlanned('${t.id}', ${!t.plannedToday})">${t.plannedToday?'Remover':'Adicionar'}</button>
           ${t.plannedToday?`<span class="muted">ordem: ${t.orderToday||0}</span>`:''}
           ${t.status!=='completed' && t.status!=='cancelled' ? `<button class="btn" style="padding:6px 10px" onclick="selectCurrent('${t.id}')">🎯 Focar</button>`:''}
+          <button class="btn" style="padding:6px 10px" onclick="openEditTask('${t.id}')">✏️ Editar</button>
         </div>
       </div>
     </div>
   `).join('');
 }
+/* ===== Página Interrupções ===== */
+function renderInterruptions() {
+  const el = $("#interruptionsList");
+  const allInterruptions = [];
+  
+  S.tasks.forEach(task => {
+    if (task.interruptions && task.interruptions.length > 0) {
+      task.interruptions.forEach(interruption => {
+        allInterruptions.push({
+          taskName: task.title,
+          ...interruption
+        });
+      });
+    }
+  });
+  
+  if (allInterruptions.length === 0) {
+    el.innerHTML = '<div class="muted" style="text-align:center;padding:12px">Nenhuma interrupção registrada.</div>';
+    return;
+  }
+  
+  // Ordenar por data (mais recente primeiro)
+  allInterruptions.sort((a, b) => new Date(b.at) - new Date(a.at));
+  
+  el.innerHTML = allInterruptions.map(interruption => `
+    <div class="interruption-item">
+      <div class="interruption-reason">${interruption.reason}</div>
+      <div>Tarefa: ${interruption.taskName}</div>
+      <div class="interruption-time">Data: ${new Date(interruption.at).toLocaleString()}</div>
+      <div>Tempo de foco: ${Math.floor(interruption.focusTime / 60)}min ${interruption.focusTime % 60}s}</div>
+      ${interruption.interruptedBy ? `<div>Interrompida por: ${S.tasks.find(t => t.id === interruption.interruptedBy)?.title || 'Desconhecida'}</div>` : ''}
+    </div>
+  `).join('');
+}
+/* ===== Emoji Slider ===== */
+function updateEmojiSlider(value) {
+  document.querySelectorAll('.emoji-slider span').forEach(span => {
+    span.classList.toggle('active', span.dataset.energy == value);
+  });
+}
 
+// Inicializar emoji sliders
+document.querySelectorAll('.emoji-slider').forEach(slider => {
+  const input = slider.nextElementSibling;
+  slider.querySelectorAll('span').forEach(span => {
+    span.addEventListener('click', () => {
+      input.value = span.dataset.energy;
+      updateEmojiSlider(span.dataset.energy);
+    });
+  });
+});
 /* ===== Render geral ===== */
 function renderAll(){
   renderHoje();
   if($("#pageTarefas").style.display!=='none'){ renderManage(); }
+  if($("#pageInterruptions").style.display!=='none'){ renderInterruptions(); }
 }
-
 /* ===== Boot ===== */
-window.addEventListener('DOMContentLoaded', load);
+window.addEventListener('DOMContentLoaded', ()=>{
+  load();
+  
+  // Inicializar emoji sliders
+  document.querySelectorAll('.emoji-slider').forEach(slider => {
+    const input = slider.nextElementSibling;
+    updateEmojiSlider(input.value);
+    
+    input.addEventListener('input', () => {
+      updateEmojiSlider(input.value);
+    });
+  });
+  
+  if(S.ui.activeTab==='tarefas'){
+    $("#tabTarefas").click();
+  } else if(S.ui.activeTab==='config'){
+    $("#tabConfig").click();
+  } else if(S.ui.activeTab==='interruptions'){
+    $("#tabInterruptions").click();
+  }
+});
 </script>
 </body>
 </html>
