@@ -380,7 +380,7 @@ function cancelTask(){
 }
 function renderHoje(){ renderPlanned(); renderCurrent(); }
 
-/* ===== Página Tarefas (inclui Concluídas) ===== */
+/* ===== Página Tarefas (inclui Concluídas) ===== */ 
 let MANAGE_FILTER='open'; // open|completed|cancelled
 $("#fltAll").onclick=()=>{MANAGE_FILTER='open'; setManageTabs(); renderManage();}
 $("#fltCompleted").onclick=()=>{MANAGE_FILTER='completed'; setManageTabs(); renderManage();}
